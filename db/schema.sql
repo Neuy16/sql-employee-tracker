@@ -3,31 +3,26 @@ CREATE DATABASE store_db;
 
 USE store_db;
 
-CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT,
-  [name] VARCHAR(30) NOT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE departments (
+  departmentsID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE [role] (
-  id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE roles (
+  rolesID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
   salary DECIMAL(2),
-  department_id INT NOT NULL,
-  FOREIGN KEY (department_id)
-  REFERENCES department(id)
-  ON DELETE SET NULL,
-  PRIMARY KEY (id)
+  departmentsID INT NOT NULL,
+  FOREIGN KEY (departmentsID) REFERENCES departments(departmentsID)
+  ON DELETE SET NULL
 );
 
-CREATE TABLE employee (
-  id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE employees (
+  employeesID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  manager_id VARCHAR(30),
-  role_id INT,
-  FOREIGN KEY (role_id)
-  REFERENCES [role](id)
-  ON DELETE SET NULL,
-  PRIMARY KEY (id)
+  managersID VARCHAR(30),
+  rolesID INT,
+  FOREIGN KEY (rolesID) REFERENCES roles(rolesID)
+  ON DELETE SET NULL
 );
