@@ -11,8 +11,8 @@ CREATE TABLE departments (
 CREATE TABLE roles (
   rolesID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
-  salary DECIMAL(2),
-  departmentsID INT NOT NULL,
+  salary INT,
+  departmentsID INT,
   FOREIGN KEY (departmentsID) REFERENCES departments(departmentsID)
   ON DELETE SET NULL
 );
