@@ -17,9 +17,9 @@ const db = mysql.createConnection(
 
 db.connect((err) => {
   if (err) throw err;
-  generateMenu();
 });
 
+generateMenu();
 function generateMenu() {
   inquirer
     .prompt([
@@ -39,15 +39,13 @@ function generateMenu() {
       },
     ])
     .then((answers) => {
-      switch (answers) {
+      console.log(answers.menu);
+      switch (answers.menu) {
         case "View all departments":
-          db.query(`SELECT * FROM store_db`, (err, results) => {
-            console.table(results);
-          });
-          generateMenu();
+          viewDepartments();
           break;
         case "View all roles":
-          // code block
+          viewRoles();
           break;
         case "View all employees":
           // code block
@@ -80,3 +78,22 @@ function generateMenu() {
     });
 }
 
+
+// SQL query functions
+function viewDepartments() {
+  db.query(`SELECT departmentsID, name FROM departments`, function (err, results) {
+    console.log('----------------*ALL DEPARTMENTS*------------------');
+    console.table(results);
+    console.log('---------------------------------------------------');
+  });
+  generateMenu();
+};
+
+function viewRoles() {
+  db.query(`SELECT rolesID, title, salary, departmentsID FROM roles`, function (err, results) {
+    console.log('----------------*ALL ROLES*------------------');
+    console.table(results);
+    console.log('---------------------------------------------------');
+  });
+  generateMenu();
+}
