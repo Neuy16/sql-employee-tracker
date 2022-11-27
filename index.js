@@ -8,8 +8,7 @@ const db = mysql.createConnection(
     host: "localhost",
     // MySQL username,
     user: "root",
-    // TODO: Add MySQL password here
-    password: "Emma2003!",
+    password: "1212",
     database: "store_db",
   },
   console.log(`Connected to the movies_db database.`)
@@ -39,7 +38,6 @@ function generateMenu() {
       },
     ])
     .then((answers) => {
-      console.log(answers.menu);
       switch (answers.menu) {
         case "View all departments":
           viewDepartments();
@@ -60,7 +58,7 @@ function generateMenu() {
           // code block
           break;
         case "Update an employee role":
-          // code block
+          updateEmployee()
           break;
       }
       // Use user feedback for... whatever!!
@@ -128,14 +126,20 @@ function addDepartment() {
     });
 }
 
+let depNamesArray = [];
+let depIdArray = [];
 function addRole() {
-    let sql = db.query(
-      "SELECT departmentsID, name FROM departments",
-      function (err, results) { 
-        console.table(results);
+  db.query(
+      "SELECT * FROM departments",
+      function (err, results) {
+        for (let i=0; i<results.length; i++) {
+          depNamesArray.push(results[i].name);
+          depIdArray.push(results[i].departmentsID)
+       }
+       return depNamesArray;
       }
     );
-  
+
     inquirer
     .prompt([
       {
@@ -146,23 +150,40 @@ function addRole() {
       {
         name: 'newRoleSalary',
         type: 'input',
-        message: 'How much do they make?'
+        message: 'How much does this person make?'
       },
       {
         name: 'newRoleDpt',
         type: 'list',
-        message: 'What ID number does this role belong to?',
-        choices: [
-          sql
-        ]
+        message: 'What department does this role belong to?',
+        choices: depNamesArray
       },
     ])
     .then((answers) => {
-
+      db.query("INSERT INTO ROLES (title) VALUES (?)", [answers.newRoleTitle]);
+      db.query("INSERT INTO ROLES (salary) VALUES (?)", [answers.newRoleSalary]);
+      switch (answers.newRoleDpt) {
+        case depNamesArray[i]: db.query("INSERT INTO ROLES (name) VALUES (?)", [answers.newDpt]); 
+      }
+        
+      generateMenu();
     })
   };
 
+  let roleArr = [];
   function addEmployee() {
+    db.query(
+      "SELECT * FROM ROLES",
+      function (err, results) {
+        for (let i=0; i<results.length; i++) {
+          roleArr.push(results[i].name + results[i].departmentsID)
+          // depIdArray.push(results[i].departmentsID)
+       }
+      //  console.log(depNamesArray)
+       return roleArr;
+      }
+    );
+
     inquirer
       .prompt([
         {
@@ -181,6 +202,12 @@ function addRole() {
           choices: ["Yes", "No"],
           message: "Does this employee have a Manager?",
         },
+        // {
+        //   name: "newEmployeeRole",
+        //   type: "list",
+        //   choices: ,
+        //   message: "What role is this employee?",
+        // }
       ])
       .then((answers) => {
         let employeeMgr = db.query(
@@ -205,7 +232,26 @@ function addRole() {
       });
   }
 
+  let empChoice = [];
   function updateEmployee() {
-    inquirer.prompt([{}]).then((answers) => {});
+    db.query(
+      "SELECT * FROM departments",
+      function (err, results) {
+        for (let i=0; i<results.length; i++) {
+          empChoice.push(results[i].first_name);
+          empChoice += results[i].last_name;
+       }
+       return empChoice;
+      }
+    );
+    inquirer.prompt([
+      {
+        name: "employeeChoice",
+        type: "choice",
+        choices: empChoice,
+        message: "Which employee would you like to update?"
+      }
+    ])
+    .then((answers) => {});
   }
 
